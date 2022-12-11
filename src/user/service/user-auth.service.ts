@@ -56,6 +56,18 @@ export class UserAuthService {
     return existing > 0;
   }
 
+  async getAuthenticatedUser( userId: string): Promise<UserEntity> {
+    const user: UserEntity = await this.userRepository.findOne({ 
+      where: { id: userId} 
+    });
+
+    if (!user) {
+      throw new BadRequestException(`Wrong credentials provided`);
+    }
+
+    return user;
+  }
+
   private getAccessToken(userId: string, birthdayDate: Date): string {
     const payload: UserAccessTokenPayload = { userId, birthdayDate };
     return this.jwtService.sign(payload);

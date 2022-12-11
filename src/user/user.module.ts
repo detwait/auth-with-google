@@ -7,6 +7,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { EnvConfigInput } from "../shared/input/env-config.input";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { userEntities } from "./entity";
+import { userFactories } from "./factory";
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { userEntities } from "./entity";
     ConfigModule,
     TypeOrmModule.forFeature(userEntities),
   ],
-  providers: [...userServices, UserFacade],
+  providers: [...userFactories, ...userServices, UserFacade],
   exports: [TypeOrmModule, UserFacade],
 })
 export class UserModule {}
