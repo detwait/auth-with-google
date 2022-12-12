@@ -1,6 +1,5 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, Param, Patch, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, Param, Patch, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { IdParamInput } from '../../shared/input/id-param.input';
 import { UserTokensDto } from '../../user/dto/user-tokens.dto';
 import { UserJwtGuard } from '../../user/guard/user-jwt.guard';
 import { UserSetBirthdayInput } from '../../user/input/user-set-birthday.input';
@@ -16,8 +15,9 @@ export class ApiUserProfileController {
 
   @ApiOperation({ summary: 'Set user birthday' })
   @ApiBearerAuth('access-token')
-  @Patch(":id/birthday")
-  async setBirthday(@Param() { id }: IdParamInput, @Body() { birthdayDate }: UserSetBirthdayInput): Promise<UserTokensDto> {
-    return this.userFacade.profile.setBirthday(id, birthdayDate);
+  @Patch("birthday")
+  async setBirthday(@Req() { user: { id: userId }}, @Body() { birthdayDate }: UserSetBirthdayInput): Promise<UserTokensDto> {
+    console.log(userId);
+    return this.userFacade.profile.setBirthday(userId, birthdayDate);
   }
 }
