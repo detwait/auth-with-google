@@ -9,14 +9,14 @@ import { UserRefreshTokenPayload } from '../interface/user-refresh-token-payload
 import { UserAuthService } from './user-auth.service';
 
 @Injectable()
-export class UserJwtStrategy extends PassportStrategy(Strategy, userAuthStrategy.refresh) {
+export class UserRefreshJwtStrategy extends PassportStrategy(Strategy, userAuthStrategy.refresh) {
   constructor(
     @Inject('JWT_USER_REFRESH_SECRET')
     private readonly secretOrKey: string,
     private readonly moduleRef: ModuleRef,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromBodyField('refreshToken'),
       secretOrKey,
       passReqToCallback: true,
     });
