@@ -1,13 +1,13 @@
-import { Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { UserFacade } from "./user.facade";
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { userServices } from "./service";
-import { JwtModule } from "@nestjs/jwt";
-import { EnvConfigInput } from "../shared/input/env-config.input";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { userEntities } from "./entity";
-import { userFactories } from "./factory";
+import { EnvConfigInput } from '../shared/input/env-config.input';
+import { userEntities } from './entity';
+import { userFactories } from './factory';
+import { userServices } from './service';
+import { UserFacade } from './user.facade';
 
 @Module({
   imports: [

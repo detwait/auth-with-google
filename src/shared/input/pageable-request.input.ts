@@ -1,7 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Exclude, Expose, Transform, TransformFnParams } from "class-transformer";
-import { IsDefined, IsNumber } from "class-validator";
-
+import { ApiProperty } from '@nestjs/swagger';
+import { Exclude, Expose, Transform, TransformFnParams } from 'class-transformer';
+import { IsDefined, IsNumber } from 'class-validator';
 
 @Exclude()
 export class PageableRequestInput {

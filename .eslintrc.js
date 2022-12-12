@@ -10,7 +10,6 @@ module.exports = {
       'plugin:unicorn/recommended',
       'plugin:import/recommended',
       'plugin:import/typescript',
-      'plugin:@bringoo/bringoo-code-style/nest-rules'
   ],
   root: true,
   env: {

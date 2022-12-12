@@ -1,11 +1,12 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { EntityManager, Repository, SelectQueryBuilder } from "typeorm";
-import { UserEntity } from "../entity/user.entity";
-import { Pageable } from "../../shared/dto/pageable.dto";
-import { UserDto } from "../dto/user.dto";
-import { PageableRequestInput } from "../../shared/input/pageable-request.input";
-import { mapUserEntityToDto } from "../mapper/user-entity-dto.mappers";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, IsNull, Not, Repository, SelectQueryBuilder } from 'typeorm';
+
+import { Pageable } from '../../shared/dto/pageable.dto';
+import { PageableRequestInput } from '../../shared/input/pageable-request.input';
+import { UserDto } from '../dto/user.dto';
+import { UserEntity } from '../entity/user.entity';
+import { mapUserEntityToDto } from '../mapper/user-entity-dto.mappers';
 
 @Injectable()
 export class UserService {
@@ -15,7 +16,7 @@ export class UserService {
   ) {}
 
   private getRepository(entityManager?: EntityManager): Repository<UserEntity> {
-    return entityManager? entityManager.getRepository(UserEntity) : this.userRepository;
+    return entityManager ? entityManager.getRepository(UserEntity) : this.userRepository;
   }
 
   async getById(userId: string): Promise<UserDto> {
@@ -24,9 +25,10 @@ export class UserService {
   }
 
   async getMany({ limit, page }: PageableRequestInput): Promise<Pageable<UserDto>> {
-    let qb: SelectQueryBuilder<UserEntity> = this.getRepository()
+    const qb: SelectQueryBuilder<UserEntity> = this.getRepository()
       .createQueryBuilder('user')
       .select()
+      .where({ birthdayDate: Not(IsNull()) })
       .take(limit)
       .skip((page - 1) * limit);
 

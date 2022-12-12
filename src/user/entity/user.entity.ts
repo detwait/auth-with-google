@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, Index } from 'typeorm';
+
 import { CoreEntity } from '../../shared/entity/core-entity';
 
 @Index(['email'], { where: 'deleted_date is NULL', unique: true })
@@ -13,7 +14,7 @@ export class UserEntity extends CoreEntity {
   @Column({ type: 'varchar', length: 300 })
   email: string;
 
-  @ApiProperty({ type: Date, required: false  })
+  @ApiProperty({ type: Date, required: false })
   @Column({ type: 'timestamp', nullable: true })
   birthdayDate: Date;
 }

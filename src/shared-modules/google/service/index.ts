@@ -4,6 +4,4 @@ import { GoogleAuthService } from './google-auth.service';
 
 export * from './google-auth.service';
 
-export const googleServices: ModuleMetadata['providers'] = [
-  GoogleAuthService,
-];
+export const googleServices: ModuleMetadata['providers'] = [GoogleAuthService];

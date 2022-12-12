@@ -46,14 +46,12 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
       }
     }
 
-    response
-      .status(status)
-      .json({
-        statusCode: status,
-        timestamp: new Date().toISOString(),
-        path: request.url,
-        message,
-        exceptionCode,
-      });
+    response.status(status).json({
+      statusCode: status,
+      timestamp: new Date().toISOString(),
+      path: request.url,
+      message,
+      exceptionCode,
+    });
   }
 }

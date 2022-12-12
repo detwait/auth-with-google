@@ -1,0 +1,163 @@
+<%
+const { utils, route, config } = it;
+const { requestBodyInfo, responseBodyInfo, specificArgNameResolver } = route;
+const { _, getInlineParseContent, getParseContent, parseSchema, getComponentByRef, require } = utils;
+const { parameters, path, method, headers, payload, query, formData, security, requestParams } = route.request;
+const { type, errorType, contentTypes } = route.response;
+const { HTTP_CLIENT, RESERVED_REQ_PARAMS_ARG_NAMES } = config.constants;
+const routeDocs = includeFile("@base/route-docs", { config, route, utils });
+const queryName = (query && query.name) || "query";
+const pathParams = _.values(parameters);
+const pathParamsNames = _.map(pathParams, "name");
+
+const isFetchTemplate = config.httpClientType === HTTP_CLIENT.FETCH;
+
+const requestConfigParam = {
+    name: specificArgNameResolver.resolve(RESERVED_REQ_PARAMS_ARG_NAMES),
+    optional: true,
+    type: "RequestParams",
+    defaultValue: "{}",
+}
+
+const argToTmpl = ({ name, optional, type, defaultValue }) => `${name}${!defaultValue && optional ? '?' : ''}: ${type}${defaultValue ? ` = ${defaultValue}` : ''}`;
+
+if(headers !== undefined){
+    const keys = Object.keys(route.headersObjectSchema.properties);
+    if(keys.length === 1 && keys[0] === 'lang'){
+          headers['optional'] = true;
+    }
+    headers['type'] = headers.type.replace('lang:','lang?:');
+}
+const status = { name: 'status', optional: true, defaultValue: route.responseBodySchema.status, type: 'number' };
+const rawWrapperArgs = config.extractRequestParams ?
+    _.compact([
+        requestParams && {
+          name: pathParams.length ? `{ ${_.join(_.map(pathParams, "name"), ", ")}, ...${queryName} }` : queryName,
+          optional: false,
+          type: getInlineParseContent(requestParams),
+        },
+        ...(!requestParams ? pathParams : []),
+        payload,
+    ]) :
+    _.compact([
+        ...pathParams,
+        query,
+        payload,
+        headers,
+        status,
+    ])
+
+const wrapperArgs = _
+    // Sort by optionality
+    .sortBy(rawWrapperArgs, [o => o.optional])
+    .map(argToTmpl)
+    .join(', ')
+
+// RequestParams["type"]
+const requestContentKind = {
+    "JSON": "ContentType.Json",
+    "URL_ENCODED": "ContentType.UrlEncoded",
+    "FORM_DATA": "ContentType.FormData",
+}
+// RequestParams["format"]
+const responseContentKind = {
+    "JSON": '"json"',
+    "IMAGE": '"blob"',
+    "FORM_DATA": isFetchTemplate ? '"formData"' : '"document"'
+}
+
+const bodyTmpl = _.get(payload, "name") || null;
+const queryTmpl = (query != null && queryName) || null;
+const bodyContentKindTmpl = requestContentKind[requestBodyInfo.contentKind] || null;
+const responseFormatTmpl = responseContentKind[responseBodyInfo.success && responseBodyInfo.success.schema && responseBodyInfo.success.schema.contentKind] || null;
+const securityTmpl = security ? 'true' : null;
+
+const pathTmpl = '`' + path + '`';
+
+const describeReturnType = () => {
+    if (!config.toJS) return "";
+
+    switch(config.httpClientType) {
+        case HTTP_CLIENT.AXIOS: {
+          return `Promise<AxiosResponse<${type}>>`
+        }
+        default: {
+          return `Promise<HttpResponse<${type}, ${errorType}>`
+        }
+    }
+}
+
+let methodName = '';
+if(route.raw.tags && route.raw.tags.length>1){
+  methodName=route.raw.tags[route.raw.tags.length-1];
+}
+
+if(methodName===''){
+  if(/^deleteOneBase/.test(route.raw.operationId)){
+    methodName = 'delete';
+  }
+
+  if(/^updateOneBase/.test(route.raw.operationId)){
+    methodName = 'update';
+  }
+
+  if(/^getManyBase/.test(route.raw.operationId)){
+    methodName = 'find';
+  }
+
+  if(/^getOneBase/.test(route.raw.operationId)){
+    methodName = 'findOne';
+  }
+
+  if(/^createOneBase/.test(route.raw.operationId)){
+    methodName = 'create';
+  }
+
+  if(/^createManyBase/.test(route.raw.operationId)){
+    methodName = 'createMany';
+  }
+
+}
+if(methodName === ''){
+  const routeParts = route.raw.operationId.split('_');
+  methodName = routeParts[routeParts.length-1];
+}
+
+if(methodName === ''){
+  console.error(route);
+}
+
+const queryParams = query != null? query.name: null;
+const payloadType = payload != null? payload.type : 'any';
+const requestArgs = [pathTmpl, `'${_.upperCase(method)}'`, _.get(payload, "name"), queryParams]
+    .reverse()
+    .reduce((args, arg) => {
+        if (args.length === 0 && !arg) return args
+        args.push(arg ? arg : 'null')
+        return args
+    }, [])
+    .reverse()
+    .join(', ')
+
+const files = requestBodyInfo.contentKind === 'FORM_DATA'?requestBodyInfo.schema.properties:null;
+let filesTmpl = null;
+if(files){
+    filesTmpl =  JSON.stringify(Object.entries(files).filter(([key,value])=>value.format==='binary').map(([key,value])=>key));
+}
+
+%>
+    <%~ methodName %><%~ route.namespace ? ': ' : ' = ' %>(<%~ wrapperArgs %>):Promise<<%~ type %>> =>
+     this.app.request<<%~ type %>>({
+         url: `<%~ path %>`,
+         method: '<%~ _.upperCase(method) %>',
+         status,
+         <%~ queryTmpl ? `query: ${queryTmpl},` : '' %>
+         <%~ bodyTmpl ? `payload: ${bodyTmpl},` : '' %>
+         <%~ filesTmpl ? `files: ${filesTmpl},` : '' %>
+         <%~ headers ? `headers,` : '' %>
+         ...(this.tokens?.accessToken && {token: this.tokens.accessToken}),
+     })<%~ route.namespace ? ',' : '' %>
+
+
+
+

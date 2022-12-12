@@ -1,6 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
-import { IsString, IsNotEmpty, IsEmail } from 'class-validator';
- 
+import { IsNotEmpty, IsString } from 'class-validator';
+
 @Exclude()
 export class GoogleUserInfoDto {
   @IsString()

@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import * as winston from 'winston';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
+
+import { ApiUserModule } from './api-user/api-user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { envValidate } from './shared/helper/env-validate';
-import { ApiUserModule } from './api-user/api-user.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { EnvConfigInput } from './shared/input/env-config.input';
 
 const envFilePath: string = `.env`;
@@ -46,7 +47,7 @@ const envFilePath: string = `.env`;
           connectionTimeoutMillis: configService.get('ENV_MODE') === 'test' ? 99999 : 6000,
         },
         ssl: configService.get<boolean>('DATABASE_SSL', false) ? { rejectUnauthorized: false } : false,
-        logging: configService.get('ENV_MODE') !== 'local' ? ['error', 'warn'] : ['error', 'warn'],
+        logging: configService.get('ENV_MODE') === 'local' ? ['error', 'warn'] : ['error', 'warn'],
       }),
     }),
     ApiUserModule,

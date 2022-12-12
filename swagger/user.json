@@ -1,0 +1,274 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api-user-auth-google": {
+      "post": {
+        "operationId": "ApiUserAuthGoogleController_auth",
+        "summary": "SignUp/signIn with with google token",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleTokenVerificationInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserTokensDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api-user-auth-google"
+        ]
+      }
+    },
+    "/api-user/{id}": {
+      "get": {
+        "operationId": "ApiUserController_getById",
+        "summary": "Get user by id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "api-user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api-user": {
+      "get": {
+        "operationId": "ApiUserController_getMany",
+        "summary": "Get many users",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Pageable<UserDto>",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Pageable"
+                    },
+                    {
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/UserDto"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api-user"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api-user-profile/birthday": {
+      "patch": {
+        "operationId": "ApiUserProfileController_setBirthday",
+        "summary": "Set user birthday",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSetBirthdayInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserTokensDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api-user-profile"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Giftshop",
+    "description": "Giftshop api",
+    "version": "1.1.1",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "http://localhost:4000"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "access-token": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "GoogleTokenVerificationInput": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "maxLength": 200,
+            "example": "dashdjlashdashdaskjdhaksdhgk"
+          }
+        },
+        "required": [
+          "access_token"
+        ]
+      },
+      "UserTokensDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "refreshToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accessToken",
+          "refreshToken"
+        ]
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "birthDay": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email"
+        ]
+      },
+      "UserSetBirthdayInput": {
+        "type": "object",
+        "properties": {
+          "birthdayDate": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "birthdayDate"
+        ]
+      },
+      "Pageable": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "Number of items on the current page"
+          },
+          "total": {
+            "type": "number",
+            "description": "Total number of items"
+          },
+          "page": {
+            "type": "number",
+            "description": "Current page"
+          },
+          "pageCount": {
+            "type": "number",
+            "description": "Total number of pages"
+          }
+        },
+        "required": [
+          "count",
+          "total",
+          "page",
+          "pageCount"
+        ]
+      }
+    }
+  }
+}

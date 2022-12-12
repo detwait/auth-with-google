@@ -2,6 +2,4 @@ import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-clas
 
 import { UserGoogleSubEntity } from './user-google-sub.entity';
 
-export const userGoogleEntities: EntityClassOrSchema[] = [
-  UserGoogleSubEntity,
-];
+export const userGoogleEntities: EntityClassOrSchema[] = [UserGoogleSubEntity];

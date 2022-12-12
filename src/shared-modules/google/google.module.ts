@@ -1,8 +1,8 @@
-import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
-import { GoogleFacade } from "./google.facade";
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
-import { googleServices } from "./service";
+import { GoogleFacade } from './google.facade';
+import { googleServices } from './service';
 
 @Module({
   imports: [ConfigModule],

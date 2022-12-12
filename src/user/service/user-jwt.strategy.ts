@@ -2,9 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ContextId, ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+
 import { userAuthStrategy } from '../constant/user-auth-strategy';
 import { UserEntity } from '../entity/user.entity';
-
 import { UserAccessTokenPayload } from '../interface/user-access-token-payload';
 import { UserAuthService } from './user-auth.service';
 

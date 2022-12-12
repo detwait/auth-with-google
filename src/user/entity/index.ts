@@ -2,6 +2,4 @@ import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-clas
 
 import { UserEntity } from './user.entity';
 
-export const userEntities: EntityClassOrSchema[] = [
-  UserEntity,
-];
+export const userEntities: EntityClassOrSchema[] = [UserEntity];

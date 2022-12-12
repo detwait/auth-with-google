@@ -4,8 +4,8 @@ import { IsDefined } from 'class-validator';
 
 @Exclude()
 export class UserSetBirthdayInput {
-  @ApiProperty({ type: String, required: true })
+  @ApiProperty({ type: String, required: true, example: '1991-03-15' })
   @IsDefined()
   @Expose()
-  birthdayDate!: Date;
+  birthdayDate!: string;
 }
