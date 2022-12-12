@@ -158,6 +158,28 @@
           }
         ]
       }
+    },
+    "/api-user-auth": {
+      "post": {
+        "operationId": "ApiUserAuthController_refresh",
+        "summary": "Refresh JWT tokens.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserTokensDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "api-user-auth"
+        ]
+      }
     }
   },
   "info": {
@@ -235,7 +257,8 @@
         "type": "object",
         "properties": {
           "birthdayDate": {
-            "type": "string"
+            "type": "string",
+            "example": "1991-03-15"
           }
         },
         "required": [

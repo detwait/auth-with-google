@@ -14,6 +14,10 @@ export class GeneratedUserApp {
     this.app = app;
   }
 
+  getTestApp(): TestApplication {
+    return this.app;
+  }
+
   apiUserAuthGoogle = {
     auth: (data: GoogleTokenVerificationInput, status: number = 201): Promise<UserTokensDto> =>
       this.app.request<UserTokensDto>({
@@ -66,6 +70,16 @@ export class GeneratedUserApp {
         method: 'PATCH',
         status,
         payload: data,
+        ...(this.tokens?.accessToken && { token: this.tokens.accessToken }),
+      }),
+  };
+
+  apiUserAuth = {
+    refresh: (status: number = 201): Promise<UserTokensDto> =>
+      this.app.request<UserTokensDto>({
+        url: `/api-user-auth`,
+        method: 'POST',
+        status,
         ...(this.tokens?.accessToken && { token: this.tokens.accessToken }),
       }),
   };

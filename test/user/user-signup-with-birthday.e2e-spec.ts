@@ -4,7 +4,7 @@ import * as faker from 'faker';
 // eslint-disable-next-line simple-import-sort/imports
 import { GenerateFakeUser } from '../shared/helpers/generate-fake-user';
 // eslint-disable-next-line simple-import-sort/imports
-import { generateMockGoogleApis } from '../mock/googleapis.mock';
+import { generateMockGoogleApis } from '../shared/mock/googleapis.mock';
 
 const { name, email } = GenerateFakeUser();
 const sub: string = `${faker.lorem.sentence(26)}`.toLowerCase();
@@ -20,10 +20,10 @@ jest.mock('googleapis', () => {
 import { GeneratedUserApp } from '../shared/generated-apps/generated-user-app';
 import { TestApplication } from '../shared/test-application';
 
-describe('User sign-up (e2e)', () => {
-  let app: TestApplication;
-  let userApp: GeneratedUserApp;
+let app: TestApplication;
+let userApp: GeneratedUserApp;
 
+describe('User api (e2e)', () => {
   beforeAll(async () => {
     app = new TestApplication();
     await app.init();
@@ -68,11 +68,6 @@ describe('User sign-up (e2e)', () => {
     expect(accessToken).toBeDefined();
     expect(refreshToken).toBeDefined();
     expect(accessToken).not.toBe(oldAccessToken);
-  });
-
-  it('Get users list', async () => {
-    const { items } = await userApp.apiUser.getMany({ limit: 100, page: 1 });
-    expect(items.length).toBeGreaterThan(0);
   });
 
   afterAll(async () => {

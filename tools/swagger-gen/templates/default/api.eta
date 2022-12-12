@@ -17,6 +17,10 @@ export class GeneratedTestApi {
     this.app = app;
   }
 
+  getTestApp(): TestApplication {
+    return this.app;
+  }
+
 <% routes.outOfModule && routes.outOfModule.forEach((route) => { %>
 
         <%~ includeFile('./procedure-call.eta', { ...it, route }) %>
